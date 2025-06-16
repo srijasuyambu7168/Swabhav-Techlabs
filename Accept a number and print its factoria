@@ -1,0 +1,17 @@
+namespace Srija1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int num, fact = 1;
+            Console.Write("Enter the number to find the factorial  :");
+            num = Convert.ToInt32(Console.ReadLine());
+            for (int i = 1; i <= num; i++)
+            {
+                fact *= i;
+            }
+            Console.Write($"The factorial of the number {num} is : {fact}");
+        }
+    }
+}
