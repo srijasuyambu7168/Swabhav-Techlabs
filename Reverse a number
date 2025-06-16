@@ -1,0 +1,20 @@
+namespace Srija1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int num, reverse = 0, a;
+            Console.Write("Enter the number to reverse :");
+            num = Convert.ToInt32(Console.ReadLine());
+            while (num != 0)
+            {
+                a = num % 10;
+                reverse = reverse * 10 + a;
+                num = num / 10;
+                
+            }
+            Console.Write($"The reversed number is {reverse}");
+        }
+    }
+}
