@@ -1,0 +1,29 @@
+namespace Srija1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int num, reverse = 0, a;
+            Console.Write("Enter the number to check if it a palindrome or not  :");
+            num = Convert.ToInt32(Console.ReadLine());
+            int temp = num;
+            while (num != 0)
+            {
+                a = num % 10;
+                reverse = reverse * 10 + a;
+                num = num / 10;
+
+            }
+            //Console.Write($"The reversed number is {reverse}");
+            if (temp == reverse)
+            {
+                Console.Write($"The entered number {temp} is palindrome");
+            }
+            else
+            {
+                Console.Write($"The entered number {temp} is not palindrome");
+            }
+        }
+    }
+}
