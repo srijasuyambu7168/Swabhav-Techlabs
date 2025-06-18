@@ -1,0 +1,33 @@
+using System;
+
+namespace Srija1
+{
+    internal class Armstrong
+    {
+        static void Main(string[] args)
+        {
+            int rem, num, temp, sum = 0;
+            Console.WriteLine("Enter a number");
+            num = Convert.ToInt32(Console.ReadLine());
+            temp = num;
+            while (num > 0)
+            {
+                rem = num % 10;
+                sum = sum + (rem * rem * rem);
+                num = num / 10;
+    
+        }
+
+            if (temp == sum)
+            {
+                Console.WriteLine($"The number {temp} is armstrong number");
+            }
+            else
+            {
+                Console.WriteLine($"The number {temp} is not a armstrong number");
+            }
+            Console.ReadLine();
+        }
+    }
+}
+
