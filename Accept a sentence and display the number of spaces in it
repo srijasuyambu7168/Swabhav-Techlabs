@@ -1,0 +1,31 @@
+using System;
+
+namespace Srija1
+{
+
+    internal class Program
+    {
+        static int Words(string sen)
+        {
+            int count = 0;
+            foreach (char character in sen)
+            {
+                if (character == ' ')
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        public static void Main()
+        {
+            Console.WriteLine("Enter a sentence:");
+            string sen = Console.ReadLine();
+
+            int wordCount = Words(sen);
+            Console.WriteLine("Number of spaces are: " + wordCount);
+        }
+    }
+
+}
+
