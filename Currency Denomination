@@ -1,0 +1,44 @@
+using System;
+namespace Srija1
+{
+    internal class Program
+    {
+        public static void Main()
+        {
+            int notes_2000, notes_500, notes_200, notes_100;
+            Console.Write("Enter the amount maximum of ₹50000 and multiple of 100): ");
+            int money = Convert.ToInt32(Console.ReadLine());
+            if (money > 50000)
+            {
+                Console.WriteLine("Error: Amount should not exceed ₹50000.");
+            }
+            else if (money % 100 != 0)
+            {
+                Console.WriteLine("Error: Amount must be a multiple of 100.");
+            }
+            else
+            {
+                notes_2000 = money / 2000;
+                money = money % 2000;
+
+                notes_500 = money / 500;
+                money = money % 500;
+
+                notes_200 = money / 200;
+                money = money % 200;
+
+                notes_100 = money / 100;
+                money = money % 100;
+
+                Console.WriteLine("\nCurrency Breakdown:");
+                if (notes_2000 > 0) Console.WriteLine($"₹2000 notes: {notes_2000}");
+                if (notes_500 > 0) Console.WriteLine($"₹500 notes : {notes_500}");
+                if (notes_200 > 0) Console.WriteLine($"₹200 notes : {notes_200}");
+                if (notes_100 > 0) Console.WriteLine($"₹100 notes : {notes_100}");
+            }
+            Console.ReadLine();
+        }
+    }
+
+}
+
