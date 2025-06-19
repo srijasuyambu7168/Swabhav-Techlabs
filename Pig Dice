@@ -1,0 +1,64 @@
+using System;
+
+namespace PlayPig
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Random random = new Random();
+            int totalScore = 0;
+            int turn = 0;
+            int maxTurn = 5;
+
+            Console.WriteLine("Let's Play Pig Game!!. The goal is to reach 20 points");
+            while (totalScore < 20 && turn < maxTurn)
+            {
+                turn++;
+                bool rolling = true;
+                int score = 0;
+                Console.WriteLine($"\n TURN {turn}");
+
+                while (rolling)
+                {
+                    Console.Write("Roll or hold? (r/h): ");
+                    string input = Console.ReadLine();
+
+                    if (input == "r")
+                    {
+                        int die = random.Next(1, 7);
+                        Console.WriteLine($"Die: {die}");
+
+                        if (die == 1)
+                        {
+                            Console.WriteLine("Sorry! Your Turn is over");
+                            score = 0;
+                            break;
+                        }
+                        else
+                        {
+                            score = score + die;
+                        }
+                    }
+                    else if (input == "h")
+                    {
+                        totalScore = totalScore + score;
+                        Console.WriteLine($"You have scored a total of {totalScore} ");
+                        break;
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Input enter 'r' to roll and 'h' to hold");
+                    }
+
+                
+
+
+                }
+                
+            }
+            Console.WriteLine($"You have scored a total of {totalScore} in these many {turn} turns");
+        }
+    }
+}
