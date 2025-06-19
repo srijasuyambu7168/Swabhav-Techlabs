@@ -1,0 +1,43 @@
+using System;
+
+namespace StudentFees
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            double[] fees = new double[5];
+
+            for (int i = 0; i < 5; i++)
+            {
+                double input;
+                while (true)
+                {
+                    Console.Write("Enter fees for Student {0}: ", i + 1);
+                    input = double.Parse(Console.ReadLine());
+
+                    if (input < 5000 || input > 10000)
+                    {
+                        Console.WriteLine("Error! Fees must be in the range ₹5000 to ₹10000.");
+                    }
+                    else
+                    {
+                        if (input > 7000)
+                        {
+                            input = input * 0.95; 
+                        }
+                        fees[i] = input;
+                        break;
+                    }
+                }
+            }
+            Console.WriteLine("The fees with discount are:");
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine("Student {0}: ₹{1}", i + 1, fees[i]);
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
