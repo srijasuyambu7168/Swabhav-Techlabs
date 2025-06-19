@@ -1,0 +1,45 @@
+using System;
+
+namespace RandomGame
+{
+    public class Program
+    {
+        public static void Main()
+        {
+            Random random = new Random();
+            int num = random.Next(1, 101); 
+            int guess = 0;
+            int tries = 0;
+            int maxTries = 5;
+
+            Console.WriteLine("I have chosen a number between 1 and 100. You have 5 tries to guess it!");
+
+            while (guess != num && tries < maxTries)
+            {
+                Console.Write($"Enter your guess: ");
+                guess = Convert.ToInt32(Console.ReadLine());
+                tries++;
+                if (guess < num)
+                {
+                    Console.WriteLine("Sorry, the number is higher.");
+                }
+                else if (guess > num)
+                {
+                    Console.WriteLine("Sorry, the number is lower.");
+                }
+                else
+                {
+                    Console.WriteLine($"Congratulations! You guessed the number {num} in {tries} attempts.");
+                    break;
+                }
+
+                if (tries == maxTries && guess != num)
+                {
+                    Console.WriteLine($"\nYou've used all {maxTries} attempts! The correct number was {num}.");
+                }
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
