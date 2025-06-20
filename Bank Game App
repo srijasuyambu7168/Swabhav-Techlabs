@@ -1,0 +1,100 @@
+using System;
+
+namespace Srija2
+{
+    public class BankAccount
+    {
+        public string AccountHolder;
+        public double balance;
+
+        public BankAccount(string name, double initialBalance)
+        {
+            AccountHolder = name;
+            balance = initialBalance;
+        }
+
+        public void Deposit(double amount)
+        {
+            if (amount > 0)
+            {
+                balance = balance + amount;
+                Console.WriteLine($"The {AccountHolder} deposited {amount} and the current balance is {balance}");
+
+            }
+            else
+            {
+                Console.WriteLine("Invalid deposit amount");
+            }
+        }
+        public void Withdraw(double amount)
+        {
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid withdraw amount");
+            }
+            else if (amount > balance)
+            {
+                Console.WriteLine("Insufficient balance amount");
+            }
+            else
+            {
+                balance = balance - amount;
+                Console.WriteLine($"{AccountHolder} has withdrawed {amount} and the current balance is {balance}");
+            }
+        }
+
+    }
+    public class Bank
+    {
+        public static void Main()
+        {
+            Random rnd = new Random();
+            BankAccount account1 = new BankAccount("Account1", rnd.Next(10000, 90000));
+            BankAccount account2 = new BankAccount("Account2", rnd.Next(10000, 90000));
+            Console.WriteLine($"Balance of {account1.AccountHolder} is: {account1.balance}");
+            Console.WriteLine($"Balance of {account2.AccountHolder} is: {account2.balance}");
+
+            for (int i = 0; i <= 3; i++)
+            {
+                Console.WriteLine($"Round {i}: \n");
+                Console.Write($"{account1.AccountHolder} Withdraw or Deposit (w/d): ");
+                string choice1 = Console.ReadLine();
+                Console.Write("Amount: ");
+                double amount1 = Convert.ToDouble(Console.ReadLine());
+
+                if (choice1 == "w")
+                    account1.Withdraw(amount1);
+                else if (choice1 == "d")
+                    account1.Deposit(amount1);
+                else
+                    Console.WriteLine("Invalid choice.");
+
+
+
+                Console.Write($"{account2.AccountHolder} Withdraw or Deposit (w/d): ");
+                string choice2 = Console.ReadLine().ToLower();
+                Console.Write("Amount: ");
+                double amount2 = Convert.ToDouble(Console.ReadLine());
+
+                if (choice2 == "w")
+                    account2.Withdraw(amount2);
+                else if (choice2 == "d")
+                    account2.Deposit(amount2);
+                else
+                    Console.WriteLine("Invalid choice.");
+
+            }
+
+            Console.WriteLine("Final Balances:");
+            Console.WriteLine($"{account1.AccountHolder}: {account1.balance}");
+            Console.WriteLine($"{account2.AccountHolder}: {account2.balance}");
+
+            if (account1.balance > account2.balance)
+                Console.WriteLine($"{account1.AccountHolder} wins!");
+            else if (account2.balance > account1.balance)
+                Console.WriteLine($"{account2.AccountHolder} wins!");
+            else
+                Console.WriteLine("It's a tie!");
+        }
+    }
+}
