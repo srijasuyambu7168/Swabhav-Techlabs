@@ -1,0 +1,49 @@
+using System;
+
+namespace BasicStatsCommandLine
+{
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Check if any arguments are passed
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Enter numbers");
+                return;
+            }
+
+            // Convert args to numbers
+            int[] numbers = new int[args.Length];
+            for (int i = 0; i < args.Length; i++)
+            {
+                bool success = int.TryParse(args[i], out numbers[i]);
+                if (!success)
+                {
+                    Console.WriteLine($"Invalid input: '{args[i]}' is not a number.");
+                    return;
+                }
+            }
+
+            int count = numbers.Length;
+            int sum = 0;
+            int max = numbers[0];
+            int min = numbers[0];
+
+            foreach (int num in numbers)
+            {
+                sum += num;
+                if (num > max) max = num;
+                if (num < min) min = num;
+            }
+
+            double average = (double)sum / count;
+
+            Console.WriteLine($"Count : {count}");
+            Console.WriteLine($"Sum   : {sum}");
+            Console.WriteLine($"Avg   : {average:F2}");
+            Console.WriteLine($"Max   : {max}");
+            Console.WriteLine($"Min   : {min}");
+        }
+    }
+}
