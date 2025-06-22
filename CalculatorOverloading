@@ -29,8 +29,6 @@ namespace CalculatorOverloading
             for (int i = 0; i < numbers.Length; i++)
             {
                 sum += numbers[i];
-                Console.Write(numbers[i]);
-                if (i != numbers.Length - 1) Console.Write(" + ");
             }
             Console.WriteLine();
             return sum;
@@ -53,13 +51,6 @@ namespace CalculatorOverloading
             int result3 = calc.Add(validArray);
             Console.WriteLine($"Result: {result3}\n");
 
-            int[] nullArray = null;
-            int result4 = calc.Add(nullArray);
-            Console.WriteLine($"Result (should be 0): {result4}\n");
-
-            int[] emptyArray = new int[0];
-            int result5 = calc.Add(emptyArray);
-            Console.WriteLine($"Result (should be 0): {result5}\n");
         }
     }
 }
