@@ -1,0 +1,202 @@
+using Operations;
+using System;
+
+namespace Account_Array
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Manager manager = new Manager();
+            bool running = true;
+
+            while (running)
+            {
+                Console.WriteLine("\n------MENU---------");
+                Console.WriteLine(" 1. Create an Account ");
+                Console.WriteLine(" 2. View Balance ");
+                Console.WriteLine(" 3. Deposit ");
+                Console.WriteLine(" 4. Withdraw ");
+                Console.WriteLine(" 5. Display All Account Details");
+                Console.WriteLine(" 6. Exit ");
+                Console.Write("Enter your choice: ");
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        manager.AddAccount();
+                        break;
+
+                    case 2:
+                        Console.Write("Enter account number: ");
+                        string acc1 = Console.ReadLine();
+                        var a1 = manager.FindAccount(acc1);
+                        if (a1 != null)
+                            Console.WriteLine($"Balance: ₹{a1.accountBalance}");
+                        else
+                            Console.WriteLine("Account not found.");
+                        break;
+
+                    case 3:
+                        Console.Write("Enter account number: ");
+                        string acc2 = Console.ReadLine();
+                        var a2 = manager.FindAccount(acc2);
+                        if (a2 != null)
+                        {
+                            Console.Write("Enter deposit amount: ");
+                            double amt = Convert.ToDouble(Console.ReadLine());
+                            a2.Deposit(amt);
+                        }
+                        else
+                            Console.WriteLine("Account not found.");
+                        break;
+
+                    case 4:
+                        Console.Write("Enter account number: ");
+                        string acc3 = Console.ReadLine();
+                        var a3 = manager.FindAccount(acc3);
+                        if (a3 != null)
+                        {
+                            Console.Write("Enter withdrawal amount: ");
+                            double amt = Convert.ToDouble(Console.ReadLine());
+                            a3.Withdraw(amt);
+                        }
+                        else
+                            Console.WriteLine("Account not found.");
+                        break;
+
+                    case 5:
+                        manager.DisplayAllAccounts();
+                        break;
+
+                    case 6:
+                        running = false;
+                        Console.WriteLine("Exiting...");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid input.");
+                        break;
+                }
+            }
+        }
+    }
+}
+
+
+using System.Xml.Linq;
+
+namespace Operations
+{
+    public class Account_Operations
+    {
+        private static Random random = new Random();
+        public string accountNumber { get; private set; }
+        public string accountName { get; set; }
+        public string accountType { get; set; }
+        public double accountBalance { get; private set; }
+
+        public void NewAccount() 
+        {
+            Console.Write("Enter Name: ");
+            accountName = Console.ReadLine();
+            Console.Write("Enter Account Type (savings/current): ");
+            accountType = Console.ReadLine();
+            accountBalance = 500;
+            accountNumber = "IDBI" + random.Next(10000000, 99999999).ToString();
+            Console.WriteLine("Account created successfully.");
+            Console.WriteLine("Account Number: " + accountNumber);
+        }
+
+        public void Deposit(double amount)
+        {
+            if (amount > 0)
+            {
+                accountBalance += amount;
+                Console.WriteLine("Amount deposited successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid amount.");
+            }
+        }
+
+        public void Withdraw(double amount)
+        {
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid amount.");
+            }
+            else if (accountBalance - amount >= 500)
+            {
+                accountBalance -= amount;
+                Console.WriteLine("Withdrawal successful.");
+            }
+            else
+            {
+                Console.WriteLine("Minimum balance of ₹500 must be maintained.");
+            }
+        }
+
+        public void DisplayAccount()
+        {
+            Console.WriteLine($"Account No: {accountNumber}, Name: {accountName}, Type: {accountType}, Balance: ₹{accountBalance}");
+        }
+
+        public string GetAccountNumber()
+        {
+            return accountNumber;
+        }
+    }
+
+}
+
+using Operations;
+namespace Operations
+{
+    public class Manager
+    {
+        Account_Operations[] accounts = new Account_Operations[3];
+        int count = 0;
+
+        public void AddAccount()
+        {
+            if (count < accounts.Length)
+            {
+                accounts[count] = new Account_Operations();
+                accounts[count].NewAccount();
+                count++;
+            }
+            else
+            {
+                Console.WriteLine("Account limit reached.");
+            }
+        }
+
+        public void DisplayAllAccounts()
+        {
+            if (count == 0)
+            {
+                Console.WriteLine("No accounts to display.");
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine($"Account {i + 1}:");
+                accounts[i].DisplayAccount();
+            }
+        }
+
+        public Account_Operations FindAccount(string accNo)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (accounts[i].GetAccountNumber() == accNo)
+                    return accounts[i];
+            }
+            return null;
+        }
+    }
+}
