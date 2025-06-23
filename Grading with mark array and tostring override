@@ -1,0 +1,71 @@
+using System;
+
+namespace Student_Grading
+{
+    internal class Student
+    {
+        string studentName;
+        string rollNumber;
+        int[] marks = new int[5];
+
+        public Student(string name,  string rollNo, int[] arrayMark)
+        {
+            studentName = name;
+            rollNumber = rollNo;
+
+            if (arrayMark.Length == 5)
+            {
+                marks = arrayMark;
+            }
+            else
+            {
+                Console.WriteLine("Enter the marks of all the 5 subjects");
+            }
+        }
+
+        public double CalculateAverage()
+        {
+            double total = 0;
+            foreach (int mark in marks)
+            {
+                total += mark;
+            }
+            return total / marks.Length;
+        }
+
+        public string Grading()
+        {
+            double avg = CalculateAverage();
+            if (avg >= 90) return "A+";
+            else if (avg >= 80) return "B";
+            else if (avg >= 70) return "C";
+            else if (avg >= 60) return "D";
+            else if (avg >= 50) return "E";
+            else return "FAIL";
+        }
+
+        // Override ToString() to print report
+        public override string ToString()
+        {
+            string marksString = string.Join(", ", marks);
+            double avg = CalculateAverage();
+            string grade = Grading();
+            Console.WriteLine("Student Report Card");
+            Console.WriteLine($"Name        : {studentName}");
+            Console.WriteLine($"Roll No     : {rollNumber}");
+            Console.WriteLine($"Marks       : {marksString}");
+            Console.WriteLine($"Average     : {avg}");
+            Console.WriteLine($"Grade       : {grade}");
+            return marksString;
+
+        }
+    
+
+        static void Main(string[] args)
+        {
+            int[] marks = { 78, 85, 90, 88, 76 };
+            Student s1 = new Student("Srija", "7897", marks);
+            Console.WriteLine(s1.ToString());
+        }
+    }
+}
