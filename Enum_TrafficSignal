@@ -1,0 +1,39 @@
+namespace Enum_TrafficSignal
+{
+    enum TrafficLight { RED, GREEN, YELLOW }
+    internal class Program
+    {
+        public static void Action(TrafficLight signal)
+        {
+            switch (signal)
+            {
+                case TrafficLight.RED:
+                    Console.WriteLine("Signal says to STOP");
+                    break;
+                case TrafficLight.GREEN:
+                    Console.WriteLine("Signal says to GO");
+                    break;
+                case TrafficLight.YELLOW:
+                    Console.WriteLine("Signal says to WAIT");
+                    break;
+                default:
+                    Console.WriteLine("Invalid Input");
+                    break;
+            }
+        }
+        static void Main(string[] args)
+        {
+            Console.Write("Enter the traffic signal (eg: RED, GREEN, YELLOW): ");
+            string input = Console.ReadLine().ToUpper();
+            bool isValid = Enum.TryParse(input, out TrafficLight signal);
+            if(isValid)
+            {
+                Action(signal);
+            }
+            else
+            {
+                Console.WriteLine("Invalid Inour!");
+            }
+        }
+    }
+}
