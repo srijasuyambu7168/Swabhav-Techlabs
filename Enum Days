@@ -1,0 +1,26 @@
+using System.Security.Cryptography;
+
+namespace Enum_Days
+{
+    enum Weekdays{ SUNDAY=1, MONDAY , TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY}
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Enter a number (1-7): ");
+            string input = Console.ReadLine();
+
+            if (int.TryParse(input, out int dayNumber) && dayNumber >= 1 && dayNumber <= 7)
+            {
+                Weekdays selectedDay = (Weekdays)dayNumber;
+                Console.WriteLine($"\nDay is: {selectedDay}");
+            }
+            else
+            {
+                Console.WriteLine("\nInvalid input. Please enter a number between 1 and 7.");
+            }
+
+
+        }
+    }
+}
