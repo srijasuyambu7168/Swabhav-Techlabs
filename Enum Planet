@@ -1,0 +1,34 @@
+using System;
+
+namespace Enum_Planet
+{
+    enum Planet{ MERCURY, VENUS, MARS, JUPITER, SATURN, URANUS, NEPTUNE}
+    public class Program
+    {
+        private static readonly double[] GravityFactor =
+        {
+            0.38, // Mercury
+            0.90, // Venus
+            0.38, // Mars
+            2.53, // Jupiter
+            1.06, // Saturn
+            0.89, // Uranus
+            1.14  // Neptune
+        };
+        static void Main(string[] args)
+        {
+            Console.Write("Enter the weight on Earth: ");
+            double.TryParse(Console.ReadLine(), out double earthWeight);
+            foreach (Planet p in (Planet[])Enum.GetValues(typeof(Planet)))
+            {
+                double weightOnPlanet = earthWeight * GravityFactor[(int)p];
+                Console.WriteLine($"Weight on {p}: {weightOnPlanet} kg");
+            }
+
+
+        }
+
+
+        }
+    }
+
