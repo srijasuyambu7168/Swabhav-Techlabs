@@ -1,0 +1,66 @@
+using System;
+
+namespace PlayPig
+{
+    internal class Program
+    {
+        const int winningScore = 20;
+        const int maxTurn = 5;
+        const string RollCmd = "r";
+        const string HoldCmd = "h";
+        static void Main(string[] args)
+        {
+            Random random = new Random();
+            int totalScore = 0;
+            int turn = 0;
+            
+            Console.WriteLine($"Let's Play Pig Game!!. The goal is to reach {winningScore} points in {maxTurn} ");
+            while (totalScore < winningScore && turn < maxTurn)
+            {
+                turn++;
+                int score = 0;
+                Console.WriteLine($"\n TURN {turn}");
+
+                while (true)
+                {
+                    Console.Write("Roll or hold? (r/h): ");
+                    string input = Console.ReadLine().ToLower();
+
+                    if (input == "r")
+                    {
+                        int die = random.Next(1, 7);
+                        Console.WriteLine($"Die: {die}");
+
+                        if (die == 1)
+                        {
+                            Console.WriteLine("Your Turn is over");
+                            score = 0;
+                            break;
+                        }
+                        else
+                        {
+                            score += die;
+                        }
+                    }
+                    else if (input == "h")
+                    {
+                        totalScore +=  score;
+                        Console.WriteLine($"You have scored a total of {totalScore} ");
+                        break;
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Input enter 'r' to roll and 'h' to hold");
+                    }
+
+                
+
+
+                }
+                
+            }
+            Console.WriteLine($"You have scored a total of {totalScore} in  {turn} turns");
+        }
+    }
+}
