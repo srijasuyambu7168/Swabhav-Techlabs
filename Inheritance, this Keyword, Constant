@@ -1,0 +1,82 @@
+namespace Inheritance_and_this
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Result result1 = new Result(100, "Srija", "BTech", 65);
+            Console.WriteLine(result1.ToString());
+
+            Result result2 = new Result(200, "Achu", "BTech", 15);
+            Console.WriteLine(result2.ToString());
+
+
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Inheritance_and_this
+{
+    internal class Student
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string CourseName { get; set; }
+
+
+        public Student(int id, string name, string coursename)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.CourseName = coursename;
+        }
+
+        public override string ToString()
+        {
+            Console.WriteLine("The details of the students are:");
+            return $"Id : {this.Id} \nName : {this.Name} \nCourse name : {this.CourseName}";
+        }
+
+     
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Inheritance_and_this
+{
+    internal class Result : Student
+    {
+        const int passmark = 35;
+        public double Marks { get; set; }
+
+        public Result(int id, string name, string coursename, double marks) : base(id, name, coursename) 
+        {
+            this.Marks = marks;
+        }
+
+        public string Results()
+        {
+            return (Marks > passmark) ? "PASS" : "FAIL";
+        }
+        public override string ToString()
+        {
+            string studentDetails = base.ToString();
+            return $"{studentDetails} \nMarks : {this.Marks} \nThe Result is : {Results()}\n";
+        }
+
+
+    }
+}
