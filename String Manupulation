@@ -4,8 +4,21 @@ namespace Stringmanupulation
     {
         static void Main(string[] args)
         {
-            string input = "Sachin,Aurionrpo,Mumbai";
-            string[] part = input.Split(','); 
+            //string input = "Sachin,Aurionrpo,Mumbai";
+            //string[] part = input.Split(','); 
+
+            if(args.Length == 0)
+            {
+                Console.WriteLine("Please enter a single line arguemnt in the form /Developer Name, Company name, Location/");
+                return;
+            }
+
+            string[]part = args[0].Split(',');
+            if(part.Length != 3 )
+            {
+                Console.WriteLine("Argument format error. It should be: name,company,location");
+            }
+
             string developer = part[0];
             string company = part[1];
             string location = part[2];
