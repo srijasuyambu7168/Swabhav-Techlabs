@@ -1,0 +1,20 @@
+namespace Stringmanupulation
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string input = "Sachin,Aurionrpo,Mumbai";
+            string[] part = input.Split(','); 
+            string developer = part[0];
+            string company = part[1];
+            string location = part[2];
+
+            Console.WriteLine($"Developer name is : {developer}");
+            Console.WriteLine($"Company name is : {company}");
+            Console.WriteLine($"Location name is : {location}");
+
+
+        }
+    }
+}
