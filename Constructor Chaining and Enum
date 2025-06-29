@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PersonWeight_ConstructorChaining
+{
+    enum Bodytype {Overweight, Underweight, Normal, Obese};
+    internal class Person
+    {
+        public int Id {  get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public double Height { get; set; }
+        public double Weight { get; set; }
+
+        public Person(int id, string name, int age, double height, double weight)
+        {
+            Id = id;
+            Name = name;
+            Age = age;
+            Height = height;
+            Weight = weight;
+        }
+
+        public Person(int id, string name, int age) : this(id, name, age, 1.5, 50.0)
+        { }
+
+        public double CalculateBmi()
+        {
+            return Math.Round(Weight / (Height * Height) ,5);
+        }
+
+        public Bodytype GetBodyType()
+        {
+            double bmi = CalculateBmi();
+            if( bmi < 18.5)
+                return Bodytype.Underweight;
+            else if ( bmi < 25 )
+                return Bodytype.Normal;
+            else if ( bmi < 30)
+                return Bodytype.Overweight;
+            else
+                return Bodytype.Obese;
+
+        }
+
+        public override string ToString()
+        {
+            Console.WriteLine("The Details of the person is: ");
+            return $"Id : {Id} \nName : {Name} \nAge : {Age} \nHeight : {Height} \nWeight : {Weight} \nThe Calcukated BMI : {CalculateBmi()} \nThe BodyType : {GetBodyType()}\n";
+        }
+    }
+}
+
+
+namespace PersonWeight_ConstructorChaining
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Person person1 = new Person(100, "Srija", 21, 1.86, 65.0);
+            Console.WriteLine(person1.ToString());
+
+            Person person2 = new Person(101, "Achu", 20);
+            Console.WriteLine(person2.ToString());
+        }
+    }
+}
+
