@@ -1,0 +1,57 @@
+namespace ProductApp
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Model_Class product1 = new Model_Class(101, "Book", 1000.0, 10.0);
+            Console.WriteLine(product1.ToString());
+
+            Model_Class product2 = new Model_Class(102, "Shelf", 8000.0, 25.0);
+            Console.WriteLine(product2.ToString());
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProductApp
+{
+    internal class Model_Class
+    {
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public double DiscountPercentage { get; set; }
+
+        public Model_Class(int id, string name, double price, double discountpercentage)
+        {
+            Id = id;
+            Name = name;
+            Price = price;
+            DiscountPercentage = discountpercentage;
+        }
+
+        public double CostAfterDiscount()
+        {
+            double discount = (Price * DiscountPercentage) / 100;
+            return Price - discount;
+        }
+
+        public override string ToString()
+        {
+            return $"\nId : {Id} \nName : {Name} \nActual Price : {Price} \nDiscountPercentage : {DiscountPercentage} \nPrice after Discount : {CostAfterDiscount()}";
+        }
+    
+
+
+
+    }
+}
