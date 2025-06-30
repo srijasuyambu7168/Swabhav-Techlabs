@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StudentApp
+{
+    internal class Student
+    {
+        private int ID { get; set; }
+        private string Name { get; set; }
+        private double CGPA { get; set; }
+
+        public int id
+        {
+            get {  return ID; }
+            set
+            {
+                if(value > 0)
+                    ID = value;
+                else
+                    ID = 0;
+            }
+        }
+
+        public string name
+        {
+            get { return Name; }
+            set
+            {
+                if (value != null && value.Length > 5)
+                    Name = value;
+                else
+                    Name = string.Empty;
+            }
+        }
+
+        public double cgpa
+        {
+            get { return CGPA; }
+            set
+            {
+                if (value >=1 && value <=10)
+                    CGPA = value;
+                else
+                    CGPA = 0;
+            }
+        }
+        public double CalculatePercentage()
+        {
+            return CGPA * 10;
+        }
+
+        public override string ToString()
+        {
+            return $"\nId is : {id} \nName is : {name} \nCGPA is : {cgpa} \nPercentage calculated is : {CalculatePercentage()}";
+        }
+    }
+}
+
+
+
+using System;
+
+namespace StudentApp
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Student student = new Student();
+            Console.Write("Enter roll number    : ");
+            student.id = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter name (Note that the length of the name should be >5): ");
+            student.name = Console.ReadLine();
+
+            Console.Write("Enter cgpa     : ");
+            student.cgpa = double.Parse(Console.ReadLine());
+
+
+            Console.WriteLine($"\nThe Details of the student is : {student.ToString()}");
+
+
+
+        }
+    }
+}
