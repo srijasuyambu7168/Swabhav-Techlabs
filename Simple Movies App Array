@@ -1,0 +1,219 @@
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Text.Json;
+using System.Xml.Linq;
+
+namespace Movie_App_Array
+{
+    internal class Program
+    {
+        private const string FileName = "movies.json";
+        public static Movie[] movies = new Movie[5];
+        static int count = 0;
+        static void Main(string[] args)
+            {
+                Program program = new Program();
+                Load();
+                int choice;
+                do
+                {
+                    Console.WriteLine("---------MENU-----------");
+                    Console.WriteLine("\n1. Add Movie");
+                    Console.WriteLine("\n2. Display Movies");
+                    Console.WriteLine("\n3. Clear All Movies");
+                    Console.WriteLine("\n4. Find Movie by Id");
+                    Console.WriteLine("\n5. Remove Movie by Id");
+                    Console.WriteLine("\n6. Exit");
+                    Console.WriteLine("Enter Your choice");
+                    choice = int.Parse(Console.ReadLine());
+                    switch (choice)
+                    {
+                        case 1:
+                            program.AddMovie();
+                            break;
+                        case 2:
+                            program.DisplayMovie();
+                            break;
+                        case 3:
+                            ClearAll();
+                            break;
+                        case 4:
+                            DisplayById();
+                            break;
+                        case 5:
+                            DeleteById();
+                            break;
+                        case 6:
+                            Save();
+                            Console.WriteLine("Exiting");
+                            break;
+                        default:
+                            Console.WriteLine("Invalid Choice");
+                            break;
+                    }
+                }
+                while (choice != 6);
+            }
+        public void AddMovie()
+        {
+            if (count < movies.Length)
+            {
+                Console.Write("Enter the Movie Id   : ");
+                int id = int.Parse(Console.ReadLine());
+                Console.Write("Enter the Movie Name : ");
+                string name = Console.ReadLine();
+                Console.Write("Enter the Movie Genre: ");
+                string genre = Console.ReadLine();
+                Console.Write("Enter the Movie Year : ");
+                int year = int.Parse(Console.ReadLine());
+
+                movies[count] = new Movie(id, name, genre, year);
+                Console.WriteLine("Movie added!");
+                count++;
+            }
+            else
+            {
+                Console.WriteLine("Capacity full.");
+            }
+        }
+
+        public void DisplayMovie()
+        {
+            if (count == 0)
+            {
+                Console.WriteLine("No student data to display.");
+                return;
+            }
+
+            Console.WriteLine($"Displaying {count} Student:");
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine($" \n Student {i + 1}:");
+                Console.WriteLine(movies[i].ToString());
+            }
+        }
+
+        private static void DisplayById()
+        {
+            Console.Write("Enter Id to display: ");
+            int id = int.Parse(Console.ReadLine());
+            for (int i = 0; i < movies.Length; i++)
+            {
+                if (movies[i].Id == id)
+                {
+                    Console.WriteLine(movies[i]);
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Please enter the correct ID");
+                }
+            }
+        }
+        private static void DeleteById()
+        {
+            Console.Write("Enter Id to delete: ");
+            int id = int.Parse(Console.ReadLine());
+
+            for (int i = 0; i < count; i++)
+            {
+                if (movies[i].Id == id)
+                {
+                    // Shift elements to left
+                    for (int j = i; j < count - 1; j++)
+                    {
+                        movies[j] = movies[j + 1];
+                    }
+                    // Clear last slot and reduce count
+                    movies[count - 1] = null;
+                    count--;
+
+                    Console.WriteLine("Movie removed.");
+                    return; 
+                }
+            }
+
+            Console.WriteLine("Movie not found.");
+        }
+
+        private static void ClearAll()
+            {
+            if (movies.Length == 0)
+            {
+                Console.WriteLine("No Movoes to clear");
+            }
+            Array.Clear(movies, 0, count);
+            count = 0;
+            Console.WriteLine("All movies removed.");
+            }
+
+        private static void Load()
+        {
+            if (!File.Exists(FileName)) return;
+
+            string json = File.ReadAllText(FileName);
+            Movie[] array = JsonSerializer.Deserialize<Movie[]>(json);
+            if (array != null)
+            {
+                for (int i = 0; i < count; i++)
+                    movies[i] = array[i];
+            }
+        }
+
+
+        private static void Save()
+        {
+            var opts = new JsonSerializerOptions { WriteIndented = true };
+            var toSave = new Movie[count];
+            Array.Copy(movies, toSave, count);
+            File.WriteAllText(FileName, JsonSerializer.Serialize(toSave, opts));
+        }
+
+
+    }
+    }
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Movie_App_Array
+{
+    internal class Movie
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Genre { get; set; }
+        public int Year { get; set; }
+
+        public Movie()
+        { }
+        public Movie(int id, string name, string genre, int year)
+        {
+            Id = id;
+            Name = name;
+            Genre = genre;
+            Year = year;
+        }
+
+
+        public override string ToString()
+        {
+            return $"Id is : {Id} \nName is : {Name} \nGenre is : {Genre} \nYear is : {Year}";
+        }
+
+        
+        
+    }
+}
+
+
+    
+
