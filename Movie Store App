@@ -1,0 +1,242 @@
+using System.Text.Json;
+using static System.Formats.Asn1.AsnWriter;
+
+namespace Movie_App
+{
+    
+    internal class Program
+    {
+        private const int Capacity = 5;
+        private const string FileName = "movies.json";
+        private static List<Movie> movies = new();
+        static void Main(string[] args)
+        {
+            Load();
+            int choice;
+            do
+            {
+                Console.WriteLine("---------MENU-----------");
+                Console.WriteLine("\n1. Add Movie");
+                Console.WriteLine("\n2. Display Movies");
+                Console.WriteLine("\n3. Clear All Movies");
+                Console.WriteLine("\n4. Find Movie by Id");
+                Console.WriteLine("\n5. Remove Movie by Id");
+                Console.WriteLine("\n6. Exit");
+                Console.WriteLine("Enter Your choice");
+                choice = int.Parse(Console.ReadLine());
+                switch (choice)
+                {
+                    case 1:
+                        AddMovie();
+                        break;
+                    case 2:
+                        DisplayAll();
+                        break;
+                    case 3:
+                        ClearAll();
+                        break;
+                    case 4:
+                        DisplayById();
+                        break;
+                    case 5:
+                        DeleteById();
+                        break;
+                    case 6:
+                        Console.WriteLine("Exiting");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid Choice");
+                        break;
+                }
+            }
+            while (choice != 6);
+        }
+        public static void AddMovie()
+        {
+            try
+            {
+                if (movies.Count >= Capacity)
+                    throw new MaxMoviesException("You can only add upto 5 movies");
+                Console.Write("Enter the Movie Id   : ");
+                int id = int.Parse(Console.ReadLine());
+                Console.Write("Enter the Movie Name : ");
+                string name = Console.ReadLine();
+                Console.Write("Enter the Movie Genre: ");
+                string genre = Console.ReadLine();
+                Console.Write("Enter the Movie Year : ");
+                int year = int.Parse(Console.ReadLine());
+
+                movies.Add(new Movie(id, name, genre, year));
+                Save();
+                Console.WriteLine("Movie added.");
+            }
+            catch (MaxMoviesException ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+        }
+
+        
+
+        private static void DisplayAll()
+        {
+            try
+            {
+                if (movies.Count == 0)
+                    throw new NoMoviesAvailableException("There Are no movies to Display");
+
+                foreach (Movie m in movies)
+                {
+                    Console.WriteLine(m.ToString());
+                    Console.WriteLine();
+                }
+            }
+            catch (NoMoviesAvailableException ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+        }
+
+        private static void DisplayById()
+        {
+            try
+            {
+                Console.Write("Enter Id to display: ");
+                int id = int.Parse(Console.ReadLine());
+                foreach (Movie m in movies)
+                {
+                    if (m.Id == id)
+                    {
+                        Console.WriteLine(m);
+                        break;
+                    }
+                }
+                if (movies == null)
+                    throw new MovieNotFoundException("Movie Not Found. Enter the correct ID");
+            }
+            catch(MovieNotFoundException ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+        }
+
+        private static void DeleteById()
+        {
+            try
+            {
+                Console.Write("Enter Id to delete: ");
+                int id = int.Parse(Console.ReadLine() ?? "0");
+
+                Movie target = null;
+                foreach (Movie m in movies)
+                {
+                    if (m.Id == id)
+                    {
+                        target = m;
+                        break;
+                    }
+                }
+
+                if (target == null)
+                    throw new MovieNotFoundException("The entered ID is incorrect");
+
+                movies.Remove(target);
+                Save();
+                Console.WriteLine("Movie deleted.");
+            }
+            catch(MovieNotFoundException ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+        }
+        private static void ClearAll()
+        {
+            try
+            {
+                if (movies.Count == 0)
+                    throw new NoMoviesAvailableException("No Movoes to clear");
+
+                movies.Clear();
+                Save();
+                Console.WriteLine("All movies cleared.");
+            }
+            catch(NoMoviesAvailableException ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+        }
+
+        private static void Load()
+        {
+            if (!File.Exists(FileName)) return;            
+
+            string json = File.ReadAllText(FileName);
+            List<Movie> list = JsonSerializer.Deserialize<List<Movie>>(json);
+            if (list != null)
+                movies.AddRange(list);
+        }
+
+        private static void Save()
+        {
+            var opts = new JsonSerializerOptions { WriteIndented = true };
+            File.WriteAllText(FileName, JsonSerializer.Serialize(movies, opts));
+
+        }
+
+
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Movie_App
+{
+    public class MaxMoviesException : Exception
+    {
+        public MaxMoviesException(string message) : base(message) 
+        { }
+    }
+
+    public class NoMoviesAvailableException : Exception
+    {
+        public NoMoviesAvailableException(string message) : base(message)
+        { }
+    }
+
+    public class MovieNotFoundException : Exception
+    {
+        public MovieNotFoundException(string message) : base(message)
+        { }
+    }
+    
+    public class Movie
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Genre { get; set; }
+        public int Year { get; set; }
+
+        public Movie(int id, string name, string genre, int year)
+        {
+            Id = id;
+            Name = name;
+            Genre = genre;
+            Year = year;
+        }
+
+
+        public override string ToString()
+        {
+            return $"Id is : {Id} \nName is : {Name} \nGenre is : {Genre} \nYear is : {Year}";
+        }
+    }
+
+        
+}
