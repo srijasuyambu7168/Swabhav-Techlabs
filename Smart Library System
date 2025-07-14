@@ -1,0 +1,465 @@
+namespace SolidPrincipleSmartLibrary
+{
+    internal class Program
+    {
+        private static Library library = new Library();
+        private static void Main()
+        {
+            while (true)
+            {
+                Console.WriteLine("\n===== SMART LIBRARY MENU =====");
+                Console.WriteLine("1. View all books");
+                Console.WriteLine("2. Add a new book");
+                Console.WriteLine("3. Add new member");
+                Console.WriteLine("4. Borrow a book");
+                Console.WriteLine("5. Return a book");
+                Console.WriteLine("6. View Book filtered by author");
+                Console.WriteLine("7. View all members");
+                Console.WriteLine("8. List of members who have borrowed books");
+                Console.WriteLine("9. List of borrowed books");
+                Console.WriteLine("10. Sort Books by Author and Title");
+                Console.WriteLine("11. Exit");
+                Console.Write("Enter your choice: ");
+
+                int choice = int.Parse(Console.ReadLine());
+                switch (choice)
+                {
+                    case 1:
+                        library.ShowBooks();
+                        break;
+                    case 2:
+                        library.AddBook();
+                        break;
+                    case 3:
+                        library.AddMember();
+                        break;
+                    case 4:
+                        library.BorrowBook();
+                        break;
+                    case 5:
+                        library.ReturnBook();
+                        break;
+                    case 6:
+                        library.FilterByAuthor();
+                        break;
+                    case 7:
+                        library.ShowMembers();
+                        break;
+                    case 8:
+                        library.DisplayMembersWithBooks();
+                        break;
+                    case 9:
+                        library.DisplayBorrowedBooks();
+                        break;
+                    case 10:
+                        library.SortedBooks();
+                        break;
+                    case 11:
+                        Console.WriteLine("exiting");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice");
+                        break;
+                }
+
+            }
+
+
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SolidPrincipleSmartLibrary
+{
+    public class BookNotFound : Exception
+    {
+        public BookNotFound(string message) : base(message)
+        {
+        }
+    }
+
+    public class BorrowLimitExceeded : Exception
+    {
+        public BorrowLimitExceeded(string message) : base(message)
+        {
+        }
+    }
+
+    public class BookNotAvailable : Exception
+    {
+        public BookNotAvailable(string message) : base(message)
+        {
+        }
+    }
+    public enum BookStatus { Available, Borrowed }
+
+    public class Books
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public BookStatus Status { get; set; } = BookStatus.Available;
+
+        public Books(int id, string title, string author)
+        {
+            this.Id = id;
+            this.Title = title;
+            this.Author = author;
+        }
+
+        public override string ToString()
+        {
+            return $"Id is : {Id} \n Title is : {Title} \nAuthor is : {Author} \nAvailability of the book : {Status}";
+        }
+
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SolidPrincipleSmartLibrary
+{
+    public class Members
+    {
+        private const int MaxBooks = 3;
+        public readonly List<Books> borrowedBooks = new List<Books>();
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+
+        public Members(int id, string name, string email, string phone)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+            Phone = phone;
+        }
+
+        public List<Books> BorrowedBooks()
+        {
+            return borrowedBooks;
+        }
+
+        public void Borrow(Books book)                          //What it takes: One parameter book, which is an object of your Books class.
+        {
+            if (borrowedBooks.Count >= MaxBooks)
+            {
+                throw new BorrowLimitExceeded("Cannot borrow more than 3 books.");
+            }
+
+            if (book.Status == BookStatus.Borrowed)
+            {
+                throw new BookNotAvailable("Book is already borrowed.");
+            }
+
+            book.Status = BookStatus.Borrowed;
+            borrowedBooks.Add(book);
+        }
+
+        public bool Return(Books book)
+        {
+            //if (!borrowedBooks.Any(b => b.Id == book.Id))
+            //{
+            //    Console.WriteLine("Book was not borrowed by this member.");
+            //    return false;
+            //}
+            if (!borrowedBooks.Contains(book))                                  //.Contains() checks by object reference (same memory location)..Any() lets you match by property, like Id, Title, etc.
+            {
+                Console.WriteLine("Book was not borrowed by this member.");
+                return false;
+            }
+
+            book.Status = BookStatus.Available;
+            borrowedBooks.Remove(book);
+            return true;
+        }
+
+        public override string ToString()
+        {
+            return $"The Member Id : {Id}\n The MemberName is : {Name}\n The Member email is : {Email}\n The Member Phone Number is :{Phone} \nNumber of Borrowed Books is : {borrowedBooks.Count}";
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SolidPrincipleSmartLibrary
+{
+    public interface ILibrary
+    {
+        void AddBook();
+        void AddMember();
+        void ShowBooks();
+        void ShowMembers();
+        void BorrowBook();
+        void ReturnBook();
+
+        void FilterByAuthor();
+        void DisplayBorrowedBooks();
+        void DisplayMembersWithBooks();
+        void SortedBooks();
+    }
+}
+
+using SolidPrincipleSmartLibrary;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SolidPrincipleSmartLibrary
+{
+    public class Library : ILibrary
+    {
+        public static List<Books> books = new List<Books>();                    //List: stores multiple objects. new : creates a new list to add our objects. Books: is our own class
+        public static List<Members> members = new List<Members>();              //static: There will be only one copy of books and members for the entire program, shared across all instances of the Library class.
+        public void AddBook()
+        {
+            Console.Write("Enter Book ID: ");
+            int id = int.Parse(Console.ReadLine());                     //converts that string to an int
+            Console.Write("Enter Title: ");
+            string title = Console.ReadLine();
+            Console.Write("Enter Author: ");
+            string author = Console.ReadLine();
+            //foreach (Books book in books)
+            //{
+            //    if (book.Id == id)
+            //    {
+            //        Console.WriteLine("Book with this ID already exists.\n");
+            //    }
+            //}
+            for (int i = 0; i < books.Count; i++)                       //books.Count: how many Books objects are in it right now.
+            {
+                if (books[i].Id == id)
+                {
+                    Console.WriteLine("Book with this ID already exists.\n");
+                    return;                                         //return: Exit the method immediately , if now exited it will add duplicate book
+                }
+            }
+            Books newBook = new Books(id, title, author);           //Creates a new object of your Books class and adds the parameter
+            books.Add(newBook);                                    //Adds the newly created Books object (newBook) into the books lis
+            Console.WriteLine("Book added successfully.\n");
+        }
+
+        public void AddMember()
+        {
+            Console.Write("ID: ");
+            int id = int.Parse(Console.ReadLine());
+            //foreach(Members m in members)
+            //{
+            //    if(m.Id ==id)
+            //    {
+            //        Console.WriteLine("Member ID exists.\n");
+            //        return;
+            //    }
+            //}
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].Id == id)
+                {
+                    Console.WriteLine("Member ID exists.\n");
+                    return;
+                }
+            }
+            Console.Write("Name: ");
+            string name = Console.ReadLine();
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+            Console.Write("Phone: ");
+            string phone = Console.ReadLine();
+            Members mem = new Members(id, name, email, phone);
+            members.Add(mem);
+            Console.WriteLine("Member added successfully.\n");
+        }
+
+
+        public void BorrowBook()
+        {
+            Console.Write("Member ID: ");
+            int memberId = int.Parse(Console.ReadLine());
+            Console.Write("Book ID: ");
+            int bookId = int.Parse(Console.ReadLine());
+
+            Members member = FindMember(memberId);                  //Members: is the type of the variable you're creating.	The data type (class you created) 
+            if (member == null)
+            {
+                Console.WriteLine("Member not found.\n");
+                return;
+            }
+
+            Books book = FindBook(bookId);
+            if (book == null)
+            {
+                Console.WriteLine("Book not found.\n");
+                return;
+            }
+
+            member.Borrow(book);
+            Console.WriteLine("\nEMAIL SENT");
+            Console.WriteLine($"To      : {member.Email}");
+            Console.WriteLine("Subject : Book Borrowed");
+            Console.WriteLine($"Message : You borrowed '{book.Title}'. Please return within 7 days.\n");
+        }
+
+
+
+
+        public void ReturnBook()
+        {
+            Console.Write("Member ID: ");
+            int memberId = int.Parse(Console.ReadLine());
+            Console.Write("Book ID  : ");
+            int bookId = int.Parse(Console.ReadLine());
+            Members member = FindMember(memberId);
+            if (member == null)
+            {
+                Console.WriteLine("Member not found.\n");
+                return;
+            }
+
+            Books book = FindBook(bookId);
+            if (book == null)
+            {
+                Console.WriteLine("Book not found.\n");
+                return;
+            }
+
+            bool success = member.Return(book);
+            if (success)
+            {
+                Console.WriteLine("\nEMAIL SENT");
+                Console.WriteLine($"To      : {member.Email} ");
+                Console.WriteLine("Subject : Book Returned");
+                Console.WriteLine($"Message : Thank you for returning {book.Title}.\n");
+            }
+        }
+
+        public Members FindMember(int id)                   //here return type is Members : returns a member from the list (with ID, Name, Email, Phone)
+        {
+            foreach (Members m in members)
+            {
+                if (m.Id == id)
+                {
+                    return m;                               // m: returns the Members object.
+                }
+            }
+            return null;
+        }
+
+        private Books FindBook(int id)
+        {
+            foreach (Books b in books)
+            {
+                if (b.Id == id)
+                {
+                    return b;
+                }
+            }
+            return null; // not found
+        }
+
+        public void ShowBooks()
+        {
+            for (int i = 0; i < books.Count; i++)
+            {
+                Console.WriteLine(books[i]);
+            }
+            Console.WriteLine();
+        }
+
+        //public List<Books> GetAllBooks()                        //return type is the List of books objects, and it returns all the list of books
+        //{
+        //    return books;
+        //}
+
+        public void ShowMembers()
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                Console.WriteLine(members[i].ToString);
+            }
+            Console.WriteLine();
+        }
+
+
+        public void SortedBooks()
+        {
+            Console.WriteLine("Books sorted by author and title :");
+            var sorted = books.OrderBy(b => b.Author).ThenBy(b => b.Title).ToList();
+            foreach (var b in sorted)
+            {
+                Console.WriteLine(b);
+            }
+        }
+
+
+        public void FilterByAuthor()
+        {
+            Console.Write("Enter author name to search: ");
+            string authorSub = Console.ReadLine().ToLower();
+            var filter = books.Where(b => b.Author.Equals(authorSub)).ToList();
+            foreach (var b in filter)
+            {
+                Console.WriteLine(b);
+            }
+            Console.WriteLine("No books found by that author.\n");
+        }
+
+
+        public void DisplayMembersWithBooks()
+        {
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (members[i].borrowedBooks.Count > 0)
+                {
+                    Console.WriteLine(members[i]);
+                    return;
+                }
+            }
+            Console.WriteLine("No members have borrowed books.\n");
+        }
+
+        public void DisplayBorrowedBooks()
+        {
+            bool any = false;
+            for (int i = 0; i < books.Count; i++)
+            {
+                if (books[i].Status == BookStatus.Borrowed)
+                {
+                    Console.WriteLine(books[i]);
+                    any = true;
+                }
+            }
+            if (!any)
+            {
+                Console.WriteLine("No borrowed books.\n");
+            }
+        }
+
+
+    }
+}
+
+
