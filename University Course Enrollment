@@ -1,0 +1,176 @@
+namespace University_Course_Enrollment
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string choice = "yes";
+            do
+            {
+                Console.WriteLine("\nEnter Course Type (online/inperson/lab):");
+                string type = Console.ReadLine().ToLower();
+
+                Console.WriteLine("Enter Course Name:");
+                string name = Console.ReadLine();
+
+                Course course = null;
+
+                switch (type)
+                {
+                    case "online":
+                        Console.WriteLine("Enter Video Platform Link:");
+                        string link = Console.ReadLine();
+                        course = new OnlineCourse(name, link);
+                        break;
+
+                    case "inperson":
+                        Console.WriteLine("Enter Room Number:");
+                        string room = Console.ReadLine();
+                        Console.WriteLine("Enter Capacity:");
+                        int capacity = Convert.ToInt32(Console.ReadLine());
+                        course = new InPersonCourse(name, room, capacity);
+                        break;
+
+                    case "lab":
+                        Console.WriteLine("Has safety training completed? (yes/no):");
+                        string training = Console.ReadLine().ToLower();
+                        bool hasTraining = training == "yes";
+                        course = new LabCourse(name, hasTraining);
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid course type.");
+                        continue; // skip the rest and loop again
+                }
+
+                course.EnrollStudent();
+
+                Console.WriteLine("\nDo you want to enroll in another course? (yes/no):");
+                choice = Console.ReadLine().ToLower();
+
+            } while (choice == "yes");
+
+           
+        }
+    }
+}
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace University_Course_Enrollment
+{
+    abstract class Course
+    {
+        public string CourseName;
+
+        public Course(string name)
+        {
+            CourseName = name;
+        }
+
+        // Abstract method for enrollment
+        public abstract void EnrollStudent();
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace University_Course_Enrollment
+{
+    class OnlineCourse : Course
+    {
+        public string VideoLink;
+
+        public OnlineCourse(string name, string videoLink) : base(name)
+        {
+            VideoLink = videoLink;
+        }
+
+        public override void EnrollStudent()
+        {
+            if (VideoLink==null)
+            {
+                Console.WriteLine("Enrollment failed: Video platform link is required for online courses.");
+            }
+            else
+            {
+                Console.WriteLine($"Enrolled in Online Course: {CourseName} using {VideoLink}");
+            }
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace University_Course_Enrollment
+{
+    class InPersonCourse : Course
+    {
+        public string RoomNumber;
+        public int Capacity;
+
+        public InPersonCourse(string name, string room, int capacity) : base(name)
+        {
+            RoomNumber = room;
+            Capacity = capacity;
+        }
+
+        public override void EnrollStudent()
+        {
+            if (RoomNumber ==null || Capacity <= 0)
+            {
+                Console.WriteLine("Enrollment failed: Room number and valid capacity required for in-person courses.");
+            }
+            else
+            {
+                Console.WriteLine($"Enrolled in In-Person Course: {CourseName} in Room {RoomNumber} with capacity {Capacity}");
+            }
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace University_Course_Enrollment
+{
+    class LabCourse : Course
+    {
+        public bool HasSafetyTraining;
+
+        public LabCourse(string name, bool hasTraining) : base(name)
+        {
+            HasSafetyTraining = hasTraining;
+        }
+
+        public override void EnrollStudent()
+        {
+            if (!HasSafetyTraining)
+            {
+                Console.WriteLine("Enrollment failed: Safety training required for lab courses.");
+            }
+            else
+            {
+                Console.WriteLine($"Enrolled in Lab Course: {CourseName} (Safety training verified)");
+            }
+        }
+    }
+}
