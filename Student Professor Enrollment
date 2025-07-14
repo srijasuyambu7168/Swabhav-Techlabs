@@ -1,0 +1,129 @@
+namespace Student_Professor_Enrollment
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // Create a Student
+            Student student = new Student(1, "Navi Mumbai", new DateTime(2003, 5, 12), "Computer Engineering");
+            Console.WriteLine("Student Details:");
+            student.DisplayInfo();
+
+            // Create a Professor
+            Professor prof = new Professor(101, "Thane", new DateTime(1980, 3, 10), 50000, 10000);
+            Console.WriteLine("Professor Details:");
+            prof.DisplayInfo();
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Student_Professor_Enrollment
+{
+    class Person
+    {
+        public int Id;
+        public string Address;
+        public DateTime DateOfBirth;
+
+        public Person(int id, string address, DateTime dob)
+        {
+            Id = id;
+            Address = address;
+            DateOfBirth = dob;
+        }
+
+        public virtual void DisplayInfo()
+        {
+            Console.WriteLine($"ID: {Id}, Address: {Address}, DOB: {DateOfBirth.ToShortDateString()}");
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Student_Professor_Enrollment
+{
+    class Student : Person
+    {
+        public string Branch;
+
+        public Student(int id, string address, DateTime dob, string branch)
+            : base(id, address, dob)
+        {
+            Branch = branch;
+        }
+
+        public override void DisplayInfo()
+        {
+            base.DisplayInfo();
+            Console.WriteLine($"Branch: {Branch}");
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Student_Professor_Enrollment
+{
+    abstract class SalariedEmployee : Person
+    {
+        public double BaseSalary;
+
+        public SalariedEmployee(int id, string address, DateTime dob, double baseSalary)
+            : base(id, address, dob)
+        {
+            BaseSalary = baseSalary;
+        }
+
+        public abstract double CalculateSalary();
+    }
+
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Student_Professor_Enrollment
+{
+    class Professor : SalariedEmployee
+    {
+        public double Bonus;
+
+        public Professor(int id, string address, DateTime dob, double baseSalary, double bonus)
+            : base(id, address, dob, baseSalary)
+        {
+            Bonus = bonus;
+        }
+
+        public override double CalculateSalary()
+        {
+            return BaseSalary + Bonus;
+        }
+
+        public override void DisplayInfo()
+        {
+            base.DisplayInfo();
+            Console.WriteLine($"Base Salary: {BaseSalary}, Bonus: {Bonus}, Total Salary: {CalculateSalary()}");
+        }
+    }
+}
+
+
