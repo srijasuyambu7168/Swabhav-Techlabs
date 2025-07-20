@@ -1,0 +1,305 @@
+namespace Shopping_Cart
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var customer = new Customer(1, "Srija");
+            var cart = new ShoppingCart(customer);
+
+            // Sample products
+            var laptop = new Product(101, "Laptop", 65000);
+            var mouse = new Product(102, "Mouse", 800);
+            var keyboard = new Product(103, "Keyboard", 1200);
+            var charger = new Product(104, "Charger", 1500);
+
+            bool running = true;
+
+            while (running)
+            {
+                Console.WriteLine("====== SHOPPING CART MENU ======");
+                Console.WriteLine("1. Add Product to Cart");
+                Console.WriteLine("2. Remove Product from Cart");
+                Console.WriteLine("3. View Cart");
+                Console.WriteLine("4. Apply Discount Code");
+                Console.WriteLine("5. Checkout");
+                Console.WriteLine("6. Exit");
+                Console.Write("Enter your choice: ");
+
+                string choice = Console.ReadLine();
+                Console.WriteLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        Console.WriteLine("Available Products:");
+                        Console.WriteLine("101. Laptop - ₹65000");
+                        Console.WriteLine("102. Mouse - ₹800");
+                        Console.WriteLine("103. Keyboard - ₹1200");
+                        Console.WriteLine("104. Charger - ₹1500");
+                        Console.Write("Enter Product ID: ");
+                        int id = int.Parse(Console.ReadLine());
+                        Console.Write("Enter quantity: ");
+                        int qty = int.Parse(Console.ReadLine());
+
+                        Product selected = id switch
+                        {
+                            101 => laptop,
+                            102 => mouse,
+                            103 => keyboard,
+                            104 => charger,
+                            _ => null
+                        };
+
+                        if (selected != null)
+                            cart.AddProduct(selected, qty);
+                        else
+                            Console.WriteLine("Invalid product ID.\n");
+
+                        break;
+
+                    case "2":
+                        Console.Write("Enter Product ID to remove: ");
+                        int removeId = int.Parse(Console.ReadLine());
+                        cart.RemoveProduct(removeId);
+                        break;
+
+                    case "3":
+                        cart.DisplayCart();
+                        break;
+
+                    case "4":
+                        Console.Write("Enter discount code (e.g. DISCOUNT10 or DISCOUNT20): ");
+                        string code = Console.ReadLine();
+                        cart.ApplyDiscount(code);
+                        break;
+
+                    case "5":
+                        cart.Checkout();
+                        break;
+
+                    case "6":
+                        running = false;
+                        Console.WriteLine("Thank you for shopping with us!");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.\n");
+                        break;
+                }
+            }
+        }
+    }
+}
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shopping_Cart
+{
+    public class CartItem
+    {
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
+
+        public CartItem(Product product, int quantity)
+        {
+            Product = product;
+            Quantity = quantity;
+        }
+
+        public void UpdateQuantity(int quantity)
+        {
+            Quantity = quantity;
+        }
+
+        public decimal GetTotalPrice()
+        {
+            return Product.Price * Quantity;
+        }
+    }
+
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shopping_Cart
+{
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+
+        public Product(int id, string name, decimal price)
+        {
+            Id = id;
+            Name = name;
+            Price = price;
+        }
+    }
+
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shopping_Cart
+{
+    public class Customer
+    {
+        public int CustomerId { get; set; }
+        public string Name { get; set; }
+
+        public Customer(int customerId, string name)
+        {
+            CustomerId = customerId;
+            Name = name;
+        }
+    }
+
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shopping_Cart
+{
+    public class ShoppingCart
+    {
+    private List<CartItem> items = new List<CartItem>();
+        public Customer Customer { get; set; }
+        public decimal discountAmount = 0;
+        private bool isCheckedOut = false;
+
+        public ShoppingCart(Customer customer)
+        {
+            Customer = customer;
+        }
+
+        public void AddProduct(Product product, int quantity)
+        {
+            if (isCheckedOut)
+            {
+                Console.WriteLine("You have already checked out. Cannot add more items.");
+                return;
+            }
+
+            var existingItem = items.FirstOrDefault(i => i.Product.Id == product.Id);
+            if (existingItem != null)
+            {
+                existingItem.UpdateQuantity(existingItem.Quantity + quantity);
+            }
+            else
+            {
+                items.Add(new CartItem(product, quantity));
+            }
+            Console.WriteLine("Item added successfully.\n");
+        }
+
+        public void RemoveProduct(int productId)
+        {
+            var item = items.FirstOrDefault(i => i.Product.Id == productId);
+            if (item != null)
+            {
+                items.Remove(item);
+                Console.WriteLine("Item removed successfully.\n");
+            }
+            else
+            {
+                Console.WriteLine("Item not found in cart.\n");
+            }
+        }
+
+        public void ApplyDiscount(string code)
+        {
+            if (code == "DISCOUNT10")
+            {
+                discountAmount = 0.10m;
+                Console.WriteLine("10% discount applied.\n");
+            }
+            else if (code == "DISCOUNT20")
+            {
+                discountAmount = 0.20m;
+                Console.WriteLine("20% discount applied.\n");
+            }
+            else
+            {
+                Console.WriteLine("Invalid coupon code.\n");
+            }
+        }
+
+        public void DisplayCart()
+        {
+            Console.WriteLine($"\nShopping Cart for {Customer.Name}");
+            foreach (var item in items)
+            {
+                Console.WriteLine($"{item.Product.Name} - {item.Quantity} x {item.Product.Price} = {item.GetTotalPrice():C}");
+            }
+            Console.WriteLine($"Subtotal: {GetTotal():C}");
+            if (discountAmount > 0)
+            {
+                decimal discountValue = GetTotal() * discountAmount;
+                Console.WriteLine($"Discount ({discountAmount}): -{discountValue}");
+                Console.WriteLine($"Total After Discount: {GetTotal() - discountValue}");
+            }
+            Console.WriteLine();
+        }
+
+        public decimal GetTotal()
+        {
+            return items.Sum(i => i.GetTotalPrice());
+        }
+
+        public void Checkout()
+        {
+            if (!items.Any())
+            {
+                Console.WriteLine("Your cart is empty.\n");
+                return;
+            }
+
+            DisplayCart();
+            decimal total = GetTotal();
+            if (discountAmount > 0)
+            {
+                total -= total * discountAmount;
+            }
+
+            Console.Write("Enter payment amount: Rs ");
+            if (decimal.TryParse(Console.ReadLine(), out decimal paidAmount))
+            {
+                if (paidAmount >= total)
+                {
+                    Console.WriteLine($"Payment successful! Change returned: {paidAmount - total}");
+                    isCheckedOut = true;
+                    items.Clear();  
+                }
+                else
+                {
+                    Console.WriteLine("Insufficient payment.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid amount entered.");
+            }
+        }
+    }
+}
+
